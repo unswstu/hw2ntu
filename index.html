@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="knockout-3.4.2.js"></script>
+    <script type="text/javascript">
+        var CallAPI = ()=> {
+            console.log('api called')
+            var StudentViewModel = function() {
+            var self = this;
+            self.firstName = ko.observable("");
+            self.lastName = ko.observable("");
+
+            self.searchKey = ko.observable("");
+            
+            console.log(self.searchKey)
+            self.getStudentDetails = function () {              
+                $.ajax({
+                    url: 'https://oz0d9kft24.execute-api.us-east-2.amazonaws.com/Dev/getstudentdetailsbyidnumber',
+                    cache: false,
+                    type: 'GET',                   
+                    data: { "IDNumber": self.searchKey() },
+                    success: function (data) {              
+                        self.firstName(data.Item.FirstName),
+                        self.lastName(data.Item.LastName)
+                        
+                    }
+                });
+            }
+}
+
+var viewModel = new StudentViewModel();
+ko.applyBindings(viewModel);
+}
+
+        $(document).ready(function() {
+
+            var StudentViewModel = function() {
+            var self = this;
+            self.firstName = ko.observable("");
+            self.lastName = ko.observable("");
+           
+            self.searchKey = ko.observable("");
+
+            self.getStudentDetails = function () {              
+                $.ajax({
+                    url: 'https://oz0d9kft24.execute-api.us-east-2.amazonaws.com/Dev/getstudentdetailsbyidnumber',
+                    cache: false,
+                    type: 'GET',                   
+                    data: { "IDNumber": self.searchKey() },
+                    success: function (data) {              
+                        self.firstName(data.Item.FirstName),
+                        self.lastName(data.Item.LastName)
+                        
+                    }
+                });
+            }
+        }
+
+            var viewModel = new StudentViewModel();
+            ko.applyBindings(viewModel);
+         });
+
+       
+    </script>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>Search Key(IDNumber):</td>
+            <td><input type="text" id="txtSearchKey" data-bind="value : searchKey"/></td>
+        </tr>
+    </table>
+
+    <br />
+  
+    <table id="StudentDetails">
+        <thead>
+            <tr>
+                <td>First Name:</td>
+                <td><label id="firstName" data-bind="text: firstName"/></td>
+            </tr>
+
+            <tr>
+                <td>Last Name:</td>
+                <td><label id="lastName" data-bind="text: lastName"/></td>
+            </tr>
+           
+          
+        </thead>
+      
+        </table>
+
+    <br />
+  
+  <table>
+<tr>
+    <td><input type="button" value="GetStudentDetails" data-bind="click: $root.getStudentDetails()"/></td>
+</tr>
+  </table>
+</body>
+</html>
